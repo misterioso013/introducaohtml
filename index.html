@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Aula de Programação - Quiz Interativo</title>
+    <style>
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f5ff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Estilos dos passos */
+        .step {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        /* Estilos do código */
+        pre {
+            background: #2d2d2d;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Botões de navegação */
+        .nav-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Confetes */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff0000;
+            pointer-events: none;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+        <h1>👩💻 Vamos criar um Quiz Interativo!</h1>
+
+        <!-- Passo 1 -->
+        <div id="step1" class="step active">
+            <h2>Passo 1: Configurar o HTML</h2>
+            <p>Abra o <a href="https://frontend.vemser.tech/editor/web" target="_blank">editor online</a> e:</p>
+            <ol>
+                <li>Crie um novo arquivo HTML</li>
+                <li>Comece com a declaração DOCTYPE:</li>
+            </ol>
+            <pre><code>&lt;!DOCTYPE html&gt;</code></pre>
+            <p>Isso informa ao navegador que é um documento HTML5.</p>
+        </div>
+
+        <!-- Passo 2 -->
+        <div id="step2" class="step">
+            <h2>Passo 2: Estrutura Básica</h2>
+            <p>Adicione as tags HTML básicas:</p>
+            <pre><code>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Quiz de Animais&lt;/title&gt;
+    &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;h1&gt;🐾 Quiz dos Animais 🦁&lt;/h1&gt;
+        &lt;div id="pergunta"&gt;&lt;/div&gt;
+        &lt;div id="opcoes"&gt;&lt;/div&gt;
+        &lt;button onclick="proximaPergunta()"&gt;Próxima&lt;/button&gt;
+        &lt;div id="resultado"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            <p>Dica: Use <code>&lt;!-- comentários --&gt;</code> para organizar seu código!</p>
+        </div>
+
+        <!-- Passo 3 -->
+        <div id="step3" class="step">
+            <h2>Passo 3: Estilizando com CSS</h2>
+            <p>Crie um arquivo <code>style.css</code> e adicione:</p>
+            <pre><code>body {
+    font-family: Arial, sans-serif;
+    background: #f0f8ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 600px;
+}
+
+button {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 15px;
+}</code></pre>
+            <p>Isso centraliza o conteúdo e dá um visual moderno.</p>
+        </div>
+
+        <!-- Passo 4 -->
+        <div id="step4" class="step">
+            <h2>Passo 4: JavaScript Básico</h2>
+            <p>Crie um arquivo <code>script.js</code> com:</p>
+            <pre><code>const perguntas = [
+    {
+        pergunta: "Qual animal vive na água e na terra?",
+        opcoes: ["Jacaré", "Girafa", "Leão"],
+        resposta: "Jacaré"
+    }
+];
+
+let perguntaAtual = 0;
+
+function exibirPergunta() {
+    document.getElementById('pergunta').textContent =
+        perguntas[perguntaAtual].pergunta;
+
+    const opcoesDiv = document.getElementById('opcoes');
+    opcoesDiv.innerHTML = '';
+
+    perguntas[perguntaAtual].opcoes.forEach(opcao => {
+        const botao = document.createElement('button');
+        botao.textContent = opcao;
+        botao.onclick = () => verificarResposta(opcao);
+        opcoesDiv.appendChild(botao);
+    });
+}
+
+function verificarResposta(opcao) {
+    if (opcao === perguntas[perguntaAtual].resposta) {
+        alert("Correto! 🎉");
+    } else {
+        alert("Tente novamente! 😊");
+    }
+}
+
+exibirPergunta();</code></pre>
+            <p>Isso cria a primeira pergunta com verificação simples.</p>
+        </div>
+
+        <!-- Passo 5 -->
+        <div id="step5" class="step">
+            <h2>Passo 5: Melhorando o JavaScript</h2>
+            <p>Adicione estas funções para tornar o quiz dinâmico:</p>
+            <pre><code>function proximaPergunta() {
+    perguntaAtual++;
+    if (perguntaAtual < perguntas.length) {
+        exibirPergunta();
+    } else {
+        document.getElementById('resultado').textContent =
+            "Quiz Completo! 🎉";
+    }
+}
+
+// Adicione mais perguntas
+perguntas.push({
+    pergunta: "Qual animal voa mas não é pássaro?",
+    opcoes: ["Morcego", "Avestruz", "Tubarão"],
+    resposta: "Morcego"
+});</code></pre>
+            <p>Agora o quiz tem navegação entre perguntas!</p>
+        </div>
+
+        <!-- Passo 6 -->
+        <div id="step6" class="step">
+            <h2>Passo 6: Estilos Avançados</h2>
+            <p>Melhore o CSS adicionando:</p>
+            <pre><code>#opcoes button {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 15px;
+    background: #3498db;
+    border-radius: 25px;
+    transition: transform 0.2s;
+}
+
+#opcoes button:hover {
+    transform: scale(1.05);
+    background: #2980b9;
+}
+
+#resultado {
+    font-size: 1.5em;
+    color: #e74c3c;
+    margin: 20px 0;
+    font-weight: bold;
+}</code></pre>
+            <p>Isso deixa os botões mais interativos e o resultado destacado.</p>
+        </div>
+
+        <!-- Passo 7 -->
+        <div id="step7" class="step">
+            <h2>🎉 Parabéns! Você completou o Quiz!</h2>
+            <p>Agora você pode:</p>
+            <ul>
+                <li>Adicionar mais perguntas</li>
+                <li>Mudar as cores no CSS</li>
+                <li>Adicionar imagens dos animais</li>
+                <li>Compartilhar seu projeto!</li>
+            </ul>
+            <button onclick="location.reload()">Recomeçar Tutorial</button>
+        </div>
+
+        <div class="nav-buttons">
+            <button id="prevBtn" onclick="previousStep()" disabled>Anterior</button>
+            <button id="nextBtn" onclick="nextStep()">Próximo</button>
+        </div>
+    </div>
+
+    <script>
+        // Controle dos passos
+        let currentStep = 1;
+        const totalSteps = 7;
+
+        function updateSteps() {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            document.getElementById('nextBtn').disabled = currentStep === totalSteps;
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                if (currentStep === totalSteps) {
+                    createConfetti();
+                }
+                updateSteps();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateSteps();
+            }
+        }
+
+        // Efeito de confete
+        function createConfetti() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animation = `confetti-fall ${Math.random() * 3 + 2}s linear`;
+                document.body.appendChild(confetti);
+
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+        }
+    </script>
+</body>
+</html>
